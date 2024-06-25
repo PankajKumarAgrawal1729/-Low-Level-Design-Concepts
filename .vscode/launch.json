@@ -1,0 +1,151 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Client",
+            "request": "launch",
+            "mainClass": "InterpreterDesignPattern.ExpressionExample.Client",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Client",
+            "request": "launch",
+            "mainClass": "MementoDesignPattern.Client",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Client",
+            "request": "launch",
+            "mainClass": "VisitorDesignPattern.HotelBookingSystem.Client",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "ApplyCouponOnShoppingCartProducts.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Client",
+            "request": "launch",
+            "mainClass": "IteratorDesignPattern.BooksAndLibrary.Client",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "LinkedHashSetExample",
+            "request": "launch",
+            "mainClass": "IteratorDesignPattern.LinkedHashSetExample",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "CreationDesignPatterns.AbstractFactoryPattern.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "BridgeDesignPattern.SolutionUsingBridgeDesignPattern.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Client",
+            "request": "launch",
+            "mainClass": "BuilderDesignPattern.Client",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "AdapterDesignPattern.Client.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "CompositeDesignPattern.CalculatorUsingCompositeDesignPattern.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "CompositeDesignPattern.Solution1WithCompositeDesignPAttern.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "DesignVendingMachine.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "HandleNullObject.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "ProxyDesignPattern",
+            "request": "launch",
+            "mainClass": "ProxydesignPattern.ProxyDesignPattern",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "MyHashMap",
+            "request": "launch",
+            "mainClass": "HashMapInternalDesign.MyHashMap",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "ChainResponsibilityDesignPattern.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "TicTacToeGame.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "FactoryPattern.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "DecoratorDesignPattern.Main",
+            "projectName": "Design Patterns LLD_853b5c21"
+        },
+        {
+            "type": "java",
+            "name": "Run with AppMap",
+            "request": "launch",
+            "mainClass": "",
+            "vmArgs": "-javaagent:${userHome}/.appmap/lib/java/appmap.jar"
+        }
+    ]
+}

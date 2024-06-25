@@ -1,0 +1,5 @@
+- SRP: A class should have only one responsibility.
+- OCP: Classes should be open for extension, but closed for modification.
+- LSP: Subtypes must be substitutable for their base types.
+- ISP: Clients should not be forced to implement interfaces they do not use.
+- DIP: Depend on abstractions, not concretions.

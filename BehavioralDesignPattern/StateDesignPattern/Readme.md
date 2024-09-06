@@ -1,125 +1,91 @@
-The **State Design Pattern** is a behavioral design pattern that allows an object to change its behavior when its internal state changes. It is as if the object changes its class. The pattern encapsulates state-specific behavior into separate classes and delegates the state management to the context object.
+The **State Design Pattern** is a behavioral design pattern that allows an object to change its behavior when its internal state changes. The object will appear to change its class. This pattern is especially useful when an object's behavior is determined by its current state, and you want to avoid complex conditionals (e.g., `if-else` or `switch` statements) that depend on the object's state.
 
 ### Key Concepts
 
-- **State**: An interface that defines the behavior associated with a particular state of the Context.
-- **ConcreteState**: Classes that implement the State interface and define specific behavior for a particular state.
-- **Context**: The class that maintains a reference to a State object and delegates state-specific behavior to it. It can change its state at runtime.
+- **Context**: Maintains an instance of a concrete state class that defines the current state. It delegates state-specific behavior to the current state.
+- **State**: An interface or abstract class that defines the behavior associated with a particular state of the context.
+- **ConcreteState**: Implements the behavior associated with a state of the context.
 
 ### Example Scenario
 
-Let's consider a TCP connection that can be in different states: `Established`, `Closed`, or `Listening`. Depending on the state of the connection, different operations like sending data or closing the connection will have different behaviors. The State pattern can be used to manage these state-dependent behaviors.
+Let's consider a **traffic light system** where the light can be in different states like Red, Green, and Yellow. Each state has different behaviors for changing to the next state.
 
 ### Implementation in Java
 
 #### Step 1: Define the State Interface
 
 ```java
-interface TCPConnectionState {
-    void open(TCPConnection context);
-    void close(TCPConnection context);
-    void acknowledge(TCPConnection context);
+interface TrafficLightState {
+    void changeLight(TrafficLightContext context);
 }
 ```
 
-#### Step 2: Create Concrete States
+- **State Interface (`TrafficLightState`)**: This interface defines the method `changeLight`, which will be implemented by the concrete state classes to change the traffic light's behavior.
+
+#### Step 2: Create Concrete State Classes
 
 ```java
-class EstablishedState implements TCPConnectionState {
+class RedLightState implements TrafficLightState {
     @Override
-    public void open(TCPConnection context) {
-        System.out.println("Connection is already established.");
-    }
-
-    @Override
-    public void close(TCPConnection context) {
-        System.out.println("Closing connection...");
-        context.setState(new ClosedState());
-    }
-
-    @Override
-    public void acknowledge(TCPConnection context) {
-        System.out.println("Acknowledging data...");
+    public void changeLight(TrafficLightContext context) {
+        System.out.println("Red Light -> Changing to Green");
+        context.setState(new GreenLightState());
     }
 }
 
-class ClosedState implements TCPConnectionState {
+class GreenLightState implements TrafficLightState {
     @Override
-    public void open(TCPConnection context) {
-        System.out.println("Opening connection...");
-        context.setState(new EstablishedState());
-    }
-
-    @Override
-    public void close(TCPConnection context) {
-        System.out.println("Connection is already closed.");
-    }
-
-    @Override
-    public void acknowledge(TCPConnection context) {
-        System.out.println("Cannot acknowledge, connection is closed.");
+    public void changeLight(TrafficLightContext context) {
+        System.out.println("Green Light -> Changing to Yellow");
+        context.setState(new YellowLightState());
     }
 }
 
-class ListeningState implements TCPConnectionState {
+class YellowLightState implements TrafficLightState {
     @Override
-    public void open(TCPConnection context) {
-        System.out.println("Switching from Listening to Established state...");
-        context.setState(new EstablishedState());
-    }
-
-    @Override
-    public void close(TCPConnection context) {
-        System.out.println("Closing connection from Listening state...");
-        context.setState(new ClosedState());
-    }
-
-    @Override
-    public void acknowledge(TCPConnection context) {
-        System.out.println("Cannot acknowledge, still listening.");
+    public void changeLight(TrafficLightContext context) {
+        System.out.println("Yellow Light -> Changing to Red");
+        context.setState(new RedLightState());
     }
 }
 ```
+
+- **Concrete States (`RedLightState`, `GreenLightState`, `YellowLightState`)**: Each class implements the `TrafficLightState` interface and defines how the traffic light transitions to the next state.
 
 #### Step 3: Create the Context Class
 
 ```java
-class TCPConnection {
-    private TCPConnectionState currentState;
+class TrafficLightContext {
+    private TrafficLightState currentState;
 
-    public TCPConnection() {
-        this.currentState = new ClosedState(); // Default state
+    public TrafficLightContext() {
+        // Initially, the traffic light starts with the RedLightState
+        currentState = new RedLightState();
     }
 
-    public void setState(TCPConnectionState state) {
+    public void setState(TrafficLightState state) {
         this.currentState = state;
     }
 
-    public void open() {
-        currentState.open(this);
-    }
-
-    public void close() {
-        currentState.close(this);
-    }
-
-    public void acknowledge() {
-        currentState.acknowledge(this);
+    public void changeLight() {
+        currentState.changeLight(this);
     }
 }
 ```
 
-#### Step 4: Create the Client
+- **Context (`TrafficLightContext`)**: This class maintains the current state of the traffic light and delegates the behavior to the current state object. The `changeLight` method allows switching between different states.
+
+#### Step 4: Client Code to Test the State Pattern
 
 ```java
-public class Client {
+public class StatePatternDemo {
     public static void main(String[] args) {
-        TCPConnection connection = new TCPConnection();
+        TrafficLightContext trafficLight = new TrafficLightContext();
 
-        connection.open();        // Output: Opening connection...
-        connection.acknowledge(); // Output: Acknowledging data...
-        connection.close();       // Output: Closing connection...
-        connection.acknowledge(); // Output: Cannot acknowledge, connection is closed.
+        trafficLight.changeLight(); // Red -> Green
+        trafficLight.changeLight(); // Green -> Yellow
+        trafficLight.changeLight(); // Yellow -> Red
+        trafficLight.changeLight(); // Red -> Green (cycle repeats)
     }
 }
 ```
@@ -127,33 +93,38 @@ public class Client {
 ### Output
 
 ```
-Opening connection...
-Acknowledging data...
-Closing connection...
-Cannot acknowledge, connection is closed.
+Red Light -> Changing to Green
+Green Light -> Changing to Yellow
+Yellow Light -> Changing to Red
+Red Light -> Changing to Green
 ```
 
 ### Explanation
 
-- **State Interface (`TCPConnectionState`)**: Defines the operations (`open`, `close`, `acknowledge`) that vary depending on the state of the `TCPConnection`.
-- **Concrete States (`EstablishedState`, `ClosedState`, `ListeningState`)**: Implement the state-specific behavior. For example, in the `ClosedState`, calling `acknowledge` results in an error message, while in the `EstablishedState`, it acknowledges data.
-- **Context (`TCPConnection`)**: Maintains the current state and delegates the state-specific behavior to the current state object. It also provides methods (`open`, `close`, `acknowledge`) that trigger state transitions.
+- **State (`TrafficLightState`)**: This is an interface defining a method to change the state of the traffic light.
+- **Concrete States (`RedLightState`, `GreenLightState`, `YellowLightState`)**: These classes implement the state transition logic for each traffic light color.
+- **Context (`TrafficLightContext`)**: This class holds a reference to the current state and allows changing the state through the `changeLight` method.
+- **Client (`StatePatternDemo`)**: Simulates the traffic light changing its state in a continuous cycle.
 
 ### Benefits
 
-- **Simplifies Complex State Logic**: By encapsulating state-specific behavior into separate classes, the code becomes easier to understand and maintain.
-- **Adheres to Open/Closed Principle**: New states can be added without modifying the existing context or other states.
-- **Improves Maintainability**: The behavior for each state is localized to its corresponding class, making it easier to update or modify.
+- **Simplifies Complex Conditionals**: The State pattern eliminates the need for complex conditionals (`if-else` or `switch` statements) by encapsulating state-specific behavior in separate classes.
+- **Encapsulates State Transitions**: Each state is responsible for managing the transition to the next state, which leads to cleaner and more maintainable code.
+- **Extensible**: New states can be added without changing the existing codebase.
 
 ### Drawbacks
 
-- **Increased Number of Classes**: Each state requires a separate class, which can lead to an increase in the number of classes in the system.
-- **Context-State Coupling**: The context needs to be aware of the state transitions, which can introduce some level of coupling.
+- **Overhead of State Classes**: For each state, you need to create a separate class, which can lead to more code and possibly higher memory usage, especially in systems with many states.
+- **State Explosion**: If there are many states, managing them could become complex and might introduce the need for additional coordination between states.
 
 ### Use Cases
 
-- **Finite State Machines**: Useful for implementing finite state machines where an object can be in one of many states and its behavior changes based on the current state.
-- **UI Components**: Managing different states of a UI component, like a button that can be in enabled, disabled, or loading states.
-- **Transaction Management**: Managing the different states of a financial transaction (e.g., pending, approved, rejected).
+- **State Machines**: Systems that transition between states, like traffic lights, turnstiles, elevators, etc.
+- **Game Development**: Character states in a game, where a character may transition between different modes like walking, running, jumping, etc.
+- **Workflow Systems**: Approval workflows, where a document moves between different states (e.g., draft, review, approved, rejected).
 
-The State pattern is ideal for scenarios where an object’s behavior is dependent on its state and the state can change at runtime. It provides a cleaner and more maintainable way to handle state-specific behavior than using conditional statements (e.g., `if-else` or `switch` statements) throughout the code.
+### Real-World Example
+
+- **ATM Machine**: An ATM can be in different states like **Idle**, **HasCard**, **PinEntered**, and **DispensingCash**. Each state defines the behavior of the ATM, and the machine transitions between these states depending on user actions.
+  
+The **State Design Pattern** makes an object's behavior dependent on its state and allows for flexible state transitions. It promotes the Open/Closed Principle by allowing the system to easily add new states without modifying existing behavior.

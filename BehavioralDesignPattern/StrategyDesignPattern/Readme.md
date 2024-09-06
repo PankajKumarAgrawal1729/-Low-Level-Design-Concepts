@@ -1,85 +1,112 @@
-The **Strategy Design Pattern** is a behavioral design pattern that allows you to define a family of algorithms, encapsulate each one as a separate class, and make them interchangeable. The Strategy pattern enables a client to choose an algorithm's behavior at runtime without modifying the client itself.
+The **Strategy Design Pattern** is a behavioral design pattern that defines a family of algorithms, encapsulates each one, and makes them interchangeable. The strategy pattern allows the algorithm to vary independently from clients that use it. In other words, you can choose which algorithm to use at runtime, promoting flexibility and extensibility in your system.
 
 ### Key Concepts
 
-- **Strategy**: An interface common to all supported algorithms. Context uses this interface to call the algorithm defined by a ConcreteStrategy.
-- **ConcreteStrategy**: Classes that implement the Strategy interface and provide specific algorithms.
-- **Context**: The class that uses a Strategy. It maintains a reference to a Strategy object and delegates the work to the currently assigned strategy.
+- **Strategy**: An interface or abstract class that defines a set of algorithms.
+- **Concrete Strategies**: Classes that implement the `Strategy` interface and provide concrete implementations of the algorithm.
+- **Context**: Maintains a reference to a strategy object and allows the client to set or change the strategy dynamically. The context uses the strategy to execute the algorithm.
 
 ### Example Scenario
 
-Consider an application that calculates the cost of a trip. The cost can vary depending on the mode of transportation: by car, by bus, or by train. Using the Strategy pattern, we can encapsulate these algorithms (car, bus, train) into separate classes and allow the client to choose the desired strategy at runtime.
+Consider an **e-commerce application** where a customer can select different payment methods like credit card, PayPal, or cryptocurrency. The process of making a payment remains the same, but the underlying algorithm (the way the payment is processed) changes depending on the selected payment method.
 
 ### Implementation in Java
 
 #### Step 1: Define the Strategy Interface
 
 ```java
-interface TravelStrategy {
-    void travel();
+interface PaymentStrategy {
+    void pay(int amount);
 }
 ```
 
-#### Step 2: Create Concrete Strategies
+- **Strategy Interface (`PaymentStrategy`)**: This interface defines the `pay` method that will be implemented by different payment methods.
+
+#### Step 2: Implement Concrete Strategies
 
 ```java
-class CarTravelStrategy implements TravelStrategy {
+class CreditCardPayment implements PaymentStrategy {
+    private String cardNumber;
+    private String name;
+    private String cvv;
+
+    public CreditCardPayment(String cardNumber, String name, String cvv) {
+        this.cardNumber = cardNumber;
+        this.name = name;
+        this.cvv = cvv;
+    }
+
     @Override
-    public void travel() {
-        System.out.println("Traveling by car. It’s fast but expensive.");
+    public void pay(int amount) {
+        System.out.println(amount + " paid using Credit Card.");
     }
 }
 
-class BusTravelStrategy implements TravelStrategy {
+class PayPalPayment implements PaymentStrategy {
+    private String email;
+
+    public PayPalPayment(String email) {
+        this.email = email;
+    }
+
     @Override
-    public void travel() {
-        System.out.println("Traveling by bus. It’s slow but cheap.");
+    public void pay(int amount) {
+        System.out.println(amount + " paid using PayPal.");
     }
 }
 
-class TrainTravelStrategy implements TravelStrategy {
+class CryptoPayment implements PaymentStrategy {
+    private String walletAddress;
+
+    public CryptoPayment(String walletAddress) {
+        this.walletAddress = walletAddress;
+    }
+
     @Override
-    public void travel() {
-        System.out.println("Traveling by train. It’s fast and cost-effective.");
+    public void pay(int amount) {
+        System.out.println(amount + " paid using Cryptocurrency.");
     }
 }
 ```
+
+- **Concrete Strategies** (`CreditCardPayment`, `PayPalPayment`, `CryptoPayment`): These classes implement the `PaymentStrategy` interface. Each class represents a specific payment method with its own implementation of the `pay` method.
 
 #### Step 3: Create the Context Class
 
 ```java
-class TravelContext {
-    private TravelStrategy strategy;
+class ShoppingCart {
+    private PaymentStrategy paymentStrategy;
 
-    // Allows setting the strategy at runtime
-    public void setTravelStrategy(TravelStrategy strategy) {
-        this.strategy = strategy;
+    public void setPaymentStrategy(PaymentStrategy paymentStrategy) {
+        this.paymentStrategy = paymentStrategy;
     }
 
-    public void executeStrategy() {
-        strategy.travel();
+    public void checkout(int amount) {
+        paymentStrategy.pay(amount);
     }
 }
 ```
 
-#### Step 4: Create the Client
+- **Context (`ShoppingCart`)**: This class maintains a reference to a `PaymentStrategy` object. The `setPaymentStrategy` method allows setting the payment method dynamically, and the `checkout` method uses the current strategy to process the payment.
+
+#### Step 4: Client Code to Test the Strategy Pattern
 
 ```java
-public class Client {
+public class StrategyPatternDemo {
     public static void main(String[] args) {
-        TravelContext context = new TravelContext();
+        ShoppingCart cart = new ShoppingCart();
 
-        // Traveling by car
-        context.setTravelStrategy(new CarTravelStrategy());
-        context.executeStrategy();
+        // Paying using credit card
+        cart.setPaymentStrategy(new CreditCardPayment("1234-5678-8765-4321", "John Doe", "123"));
+        cart.checkout(2500);
 
-        // Traveling by bus
-        context.setTravelStrategy(new BusTravelStrategy());
-        context.executeStrategy();
+        // Paying using PayPal
+        cart.setPaymentStrategy(new PayPalPayment("john.doe@example.com"));
+        cart.checkout(1000);
 
-        // Traveling by train
-        context.setTravelStrategy(new TrainTravelStrategy());
-        context.executeStrategy();
+        // Paying using cryptocurrency
+        cart.setPaymentStrategy(new CryptoPayment("abc123wallet"));
+        cart.checkout(3000);
     }
 }
 ```
@@ -87,32 +114,36 @@ public class Client {
 ### Output
 
 ```
-Traveling by car. It’s fast but expensive.
-Traveling by bus. It’s slow but cheap.
-Traveling by train. It’s fast and cost-effective.
+2500 paid using Credit Card.
+1000 paid using PayPal.
+3000 paid using Cryptocurrency.
 ```
 
 ### Explanation
 
-- **Strategy Interface (`TravelStrategy`)**: Defines the interface for the travel strategies, ensuring that all strategies implement the `travel` method.
-- **Concrete Strategies (`CarTravelStrategy`, `BusTravelStrategy`, `TrainTravelStrategy`)**: Implement the `TravelStrategy` interface, each providing a different implementation of the `travel` method.
-- **Context (`TravelContext`)**: Maintains a reference to a `TravelStrategy` object. The `setTravelStrategy` method allows the client to set the desired strategy at runtime, and `executeStrategy` delegates the action to the strategy's `travel` method.
+- **Strategy (`PaymentStrategy`)**: This is an interface defining the method `pay`, which will be implemented by different payment methods.
+- **Concrete Strategies** (`CreditCardPayment`, `PayPalPayment`, `CryptoPayment`)**: These classes represent different payment methods. Each one provides its own implementation of the `pay` method.
+- **Context (`ShoppingCart`)**: This class holds a reference to a `PaymentStrategy` object and allows the client to set a strategy dynamically. The `checkout` method delegates the payment process to the current strategy.
 
 ### Benefits
 
-- **Flexibility**: Allows the client to choose from a variety of algorithms at runtime.
-- **Encapsulation**: Each strategy is encapsulated in its own class, promoting separation of concerns.
-- **Maintainability**: New strategies can be added without altering the existing codebase, following the Open/Closed Principle.
+- **Easily Switch Algorithms**: The client can easily change the algorithm being used (the payment method in this case) without modifying the context class.
+- **Open/Closed Principle**: You can add new strategies (e.g., new payment methods) without changing existing code, thus adhering to the open/closed principle.
+- **Improves Maintainability**: By encapsulating algorithms in separate classes, the code becomes more modular and easier to maintain.
 
 ### Drawbacks
 
-- **Increased Number of Classes**: Every new strategy requires the creation of a new class, which can increase the overall complexity of the codebase.
-- **Context Dependency on Strategy Interface**: The context must be aware of the Strategy interface and its methods, which introduces a level of coupling.
+- **Increased Number of Classes**: Every time you add a new strategy, you need to create a new class, which could lead to a large number of classes in systems with many strategies.
+- **Strategy Selection Logic**: The client must know which strategy to use, so the logic of selecting a strategy may become complex if there are many options.
 
 ### Use Cases
 
-- **Sorting Algorithms**: An application might support multiple sorting algorithms (e.g., bubble sort, quick sort, merge sort), and the client can choose the appropriate one at runtime.
-- **Compression Algorithms**: Different compression algorithms (e.g., ZIP, RAR, TAR) can be encapsulated using the Strategy pattern.
-- **Payment Methods**: An e-commerce system might support multiple payment methods (e.g., credit card, PayPal, bank transfer), and the Strategy pattern allows for choosing the payment method dynamically.
+- **Payment Systems**: As shown in the example, when different payment methods can be selected dynamically at runtime.
+- **Sorting Algorithms**: If you need to switch between different sorting algorithms (e.g., quicksort, mergesort) based on data characteristics.
+- **Data Compression**: Different compression algorithms (e.g., ZIP, GZIP, TAR) can be encapsulated as strategies and chosen based on user preference or file size.
 
-The Strategy pattern is particularly useful when you need to provide multiple ways to achieve a specific task and want to switch between these algorithms seamlessly without affecting the client code. It promotes flexibility and adherence to SOLID principles, especially the Open/Closed Principle.
+### Real-World Example
+
+- **File Compression Software**: Many file compression tools (like WinZip or 7-Zip) allow users to choose between different compression algorithms (like ZIP, GZIP, or TAR). Each algorithm is encapsulated as a strategy, and the software selects the appropriate one based on user input.
+  
+The **Strategy Design Pattern** promotes flexibility by allowing the client to choose the algorithm at runtime without modifying the context class. It enhances the extensibility of the system, making it easier to add new algorithms in the future.
